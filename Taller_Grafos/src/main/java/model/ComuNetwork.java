@@ -1,4 +1,5 @@
 package model;
+
 import org.jgrapht.Graph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -7,38 +8,52 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import java.util.List;
 
 public class ComuNetwork {
+
     private final Graph<String, DefaultWeightedEdge> network;
 
     public ComuNetwork() {
-
         network = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-        initializeNetwork();
     }
 
-    private void initializeNetwork() {
+    public void addNode(String nodeName) {
+        if (!network.containsVertex(nodeName)) {
+            network.addVertex(nodeName);
+            System.out.println("Nodo " + nodeName + " agregado.");
+        } else {
+            System.out.println("El nodo " + nodeName + " ya existe.");
+        }
+    }
 
-        network.addVertex("Nodo A");
-        network.addVertex("Nodo B");
-        network.addVertex("Nodo C");
-        network.addVertex("Nodo D");
-        network.addVertex("Nodo E");
-        network.addVertex("Nodo F");
-        network.addVertex("Nodo G");
-        network.addVertex("Nodo H");
+    public void removeNode(String nodeName) {
+        if (network.containsVertex(nodeName)) {
+            network.removeVertex(nodeName);
+            System.out.println("Nodo " + nodeName + " eliminado.");
+        } else {
+            System.out.println("El nodo " + nodeName + " no existe.");
+        }
+    }
 
-        network.setEdgeWeight(network.addEdge("Nodo A", "Nodo B"), 10);
-        network.setEdgeWeight(network.addEdge("Nodo A", "Nodo C"), 15);
-        network.setEdgeWeight(network.addEdge("Nodo B", "Nodo D"), 12);
-        network.setEdgeWeight(network.addEdge("Nodo C", "Nodo E"), 10);
-        network.setEdgeWeight(network.addEdge("Nodo D", "Nodo E"), 2);
-        network.setEdgeWeight(network.addEdge("Nodo B", "Nodo E"), 5);
-        network.setEdgeWeight(network.addEdge("Nodo E", "Nodo F"), 8);
-        network.setEdgeWeight(network.addEdge("Nodo F", "Nodo G"), 6);
-        network.setEdgeWeight(network.addEdge("Nodo G", "Nodo H"), 7);
-        network.setEdgeWeight(network.addEdge("Nodo C", "Nodo H"), 20);
+    public void addConnection(String node1, String node2, double weight) {
+        if (network.containsVertex(node1) && network.containsVertex(node2)) {
+            DefaultWeightedEdge edge = network.addEdge(node1, node2);
+            if (edge != null) {
+                network.setEdgeWeight(edge, weight);
+                System.out.println("Conexión entre " + node1 + " y " + node2 + " agregada con peso: " + weight);
+            } else {
+                System.out.println("La conexión entre " + node1 + " y " + node2 + " ya existe.");
+            }
+        } else {
+            System.out.println("Uno o ambos nodos no existen.");
+        }
+    }
 
-        network.setEdgeWeight(network.addEdge("Nodo D", "Nodo F"), 3);
-        network.setEdgeWeight(network.addEdge("Nodo B", "Nodo F"), 9);
+    public void removeConnection(String node1, String node2) {
+        if (network.containsEdge(node1, node2)) {
+            network.removeEdge(node1, node2);
+            System.out.println("Conexión entre " + node1 + " y " + node2 + " eliminada.");
+        } else {
+            System.out.println("No existe una conexión entre " + node1 + " y " + node2);
+        }
     }
 
     public List<String> findShortestPath(String source, String target) {
@@ -61,5 +76,13 @@ public class ComuNetwork {
 
     public Graph<String, DefaultWeightedEdge> getNetwork() {
         return network;
+    }
+
+    public int getNodeCount() {
+        return network.vertexSet().size();
+    }
+
+    public int getConnectionCount() {
+        return network.edgeSet().size();
     }
 }
